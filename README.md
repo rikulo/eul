@@ -1,4 +1,4 @@
-#Rikulo
+#Rikulo UXL
 
 [Rikulo UXL](http://rikulo.org) (User-interface eXtensible Language) is a markup language that allows developers to define feature-rich user-interface in HTML 5 and XML.
 
@@ -9,6 +9,22 @@
 * [Issues](https://github.com/rikulo/rikulo-uxl/issues)
 
 Rikulo UXL is distributed under an Apache 2.0 License.
+
+##Pub Packages
+
+*Required*
+    #import("package:rikulo_uxl/uxl.dart");
+    //UXL classes and utilities
+
+*Optional*
+    #import("package:rikulo_uxl/impl.dart");
+    //UXL implementation for overriding UIFactory and other internal functions
+
+##pubspec.yaml
+    name: ...
+	...
+	dependencies:
+	  rikulo_el:
 
 ##Advantages
 
