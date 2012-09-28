@@ -7,3 +7,6 @@ authors:
 - Tom Yeh <tomyeh@rikulo.org>
 - Henri Chen <henrichen@rikulo.org>
 homepage: http://rikulo.org
+dependencies:
+  rikulo:
+  rikulo_el:
