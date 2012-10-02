@@ -30,7 +30,7 @@
  * On the other hand, the first and third formats won't store the controller
  * in any variable. 
  */
-interface Controller<T> {
+interface Controller<T extends View> {
   /** Callback to initialize the views.
    * It is called after the associated view ([view]) and all of
    * its descendant views are instantiated.
