@@ -27,13 +27,13 @@ class UXLTemplate implements Template {
    * 
    * HTML:
    *
-   *     <div data-view="View" data-layout="type: linear">
-   *       UXL: <div data-view="Switch" data-value="true"></div>
+   *     <div data-as="View" data-layout="type: linear">
+   *       UXL: <div data-as="Switch" data-value="true"></div>
    *     </div>
    *
    * Java:
    *
-   *     new Tempalte.fromNode(document.query("#templ").elements[0].remove());
+   *     new Tempalte.fromNode(document.query("#templ").elements[0]..remove());
    *
    * Notice that it is OK to use the XML format as described in [UXLTemplate] constructor,
    * though it is not a valid HTML document.
@@ -77,10 +77,14 @@ class UXLTemplate implements Template {
       //2) handle special elements
       final attrs = elem.attributes;
       String name = elem.tagName.toLowerCase();
+      String s = _getAttr(attrs, "as");
+      if (s != null) name = s;
+      else if (name == "div")
+        name = "View"; //default
       switch (name) {
       case "attribute":
         uiFactory.setProperty(parent,
-          _getAttr(attrs, "name", name), XMLUtil.getInner(elem));
+          _getAttr(attrs, "name", name), _evalInner(ctx, elem));
         return; //done
       case "import":
         for (final n in _getAttr(attrs, "name", name).split(','))
@@ -88,7 +92,7 @@ class UXLTemplate implements Template {
         return;
       case "variable":
         //TODO: handle expression
-        ctx.setVariable(_getAttr(attrs, "name", name), XMLUtil.getInner(elem));
+        ctx.setVariable(_getAttr(attrs, "name", name), _evalInner(ctx, elem));
         return;
       case "template":
         view.templates[_getAttr(attrs, "name", name)] = new UXLTemplate.fromNode(node);
@@ -100,11 +104,6 @@ class UXLTemplate implements Template {
       }
 
       //3) create a view (including pseudo)
-      String s = _getAttr(attrs, "view");
-      if (s != null)
-        name = s;
-      else if (name == "div")
-        name = "View"; //default
       view = uiFactory.newInstance(ctx.mirrors, parent, before, name);
 
       //4) instantiate controller
@@ -123,13 +122,10 @@ class UXLTemplate implements Template {
       }
 
       //5) assign properties
-      for (String key in attrs.getKeys()) {
-        if (_isSpecialAttr(key))
-          continue; //ignore (since they have been processed)
-
-        uiFactory.setProperty(view,
-          key.startsWith("data-") ? key.substring(5): key, attrs[key]);
-      }
+      for (String key in attrs.getKeys())
+        if (!_isSpecialAttr(key))
+          uiFactory.setProperty(view,
+            key.startsWith("data-") ? key.substring(5): key, attrs[key]);
 
       //6) handle the child nodes
       for (Node n in node.nodes)
@@ -149,6 +145,85 @@ class UXLTemplate implements Template {
   }
   Iterable _getForEach(Element elem) => null; //TODO
   bool _isEffective(Element elem) => true; //TODO
+
+  /** Evaluate the inner content of the given element.
+   */
+  _evalInner(_Context ctx, Element elem) {
+    switch (elem.nodes.length) {
+      case 0: return "";
+      case 1:
+        if (elem.nodes[0] is Text) {
+          //TODO: evaluate wholeText before return
+          return (elem.nodes[0] as Text).wholeText;
+        }
+        break;
+    }
+
+    final StringBuffer sb = new StringBuffer();
+    _xmlInner(ctx, sb, elem);
+    return sb.toString();
+  }
+  void _xmlInner(_Context ctx, StringBuffer sb, Element elem) {
+    for (Node n in elem.nodes){
+      if (n is Element) {
+        final e = n as Element;
+        if (_xmlBeg(ctx, sb, e)) {
+          _xmlInner(ctx, sb, e);
+          _xmlEnd(sb, e);
+        }
+      } else if (n is Text) {
+        sb.add((n as Text).wholeText);
+      } else if (n is ProcessingInstruction) {
+        final pi = n as ProcessingInstruction;
+        sb.add('<?').add(pi.target).add(' ').add(pi.data).add('?>');
+      } else if (n is Comment) {
+        sb.add('<!--').add((n as Comment).data).add('-->');
+      }//ignore unrecogized nodes (such as Entity, Notation...)
+    }
+  }
+  bool _xmlBeg(_Context ctx, StringBuffer sb, Element elem, [bool loopForEach=false]) {
+    //1) handle forEach, if and unless
+    final Iterable forEach = loopForEach ? null: _getForEach(elem);
+    if (forEach != null) {
+      final prev = ctx.getVariable("each");
+      for (final each in forEach) {
+        ctx.setVariable("each", each);
+        _xmlBeg(ctx, sb, elem, true);
+        _xmlInner(ctx, sb, elem);
+        _xmlEnd(sb, elem);
+      }
+      ctx.setVariable("each", prev);
+      return false;
+    } else if (!_isEffective(elem)) {
+      return false; //ignored
+    }
+
+    //2) handle special elements
+    final attrs = elem.attributes;
+    String tagName = elem.tagName;
+    String s = _getAttr(attrs, "as");
+    if (s != null) tagName = s;
+    switch (tagName.toLowerCase()) {
+      case "attribute":
+      case "import":
+      case "template":
+        throw new UIException("$tagName not allowed in <attribute> and <variable>");
+      case "variable":
+        //TODO: handle expression
+        ctx.setVariable(_getAttr(attrs, "name", tagName), _evalInner(ctx, elem));
+        return false;
+    }
+    sb.add('<').add(tagName);
+
+    for (String key in attrs.getKeys())
+      sb.add(' ').add(key).add('="').add(attrs[key]).add('"');
+
+    sb.add('>');
+    return true;
+  }
+  static void _xmlEnd(StringBuffer sb, Element elem) {
+    sb.add('</').add(elem.tagName).add('>');
+  }
 }
 
 /**
@@ -164,8 +239,8 @@ String _getAttr(Map<String, String> attrs, String name, [String requiredBy]) {
 }
 bool _isSpecialAttr(String name) => _spcAttrs.contains(name);
 final Set<String> _spcAttrs =
-  new Set.from(["view", "forEach", "if", "unless", "apply",
-    "data-view", "data-forEach", "data-if", "data-unless", "data-apply"]);
+  new Set.from(["as", "forEach", "if", "unless", "apply",
+    "data-as", "data-forEach", "data-if", "data-unless", "data-apply"]);
 
 /** The context used to create views from a UXL document.
  */

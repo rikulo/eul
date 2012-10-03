@@ -32,7 +32,7 @@ class TestUXL extends Activity {
       ''').create(parent);
   }
   void test2(View parent) {
-    new UXLTemplate.fromNode(document.query("#uxl").elements[0].remove())
+    new UXLTemplate.fromNode(document.query("#uxl").elements[0]..remove())
       .create(parent);
   }
 }
