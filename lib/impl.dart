@@ -4,7 +4,8 @@
 #library("rikulo_uxl/impl");
 
 #import("dart:mirrors");
-#import("package:rikulo/view.dart");
+//#import("package:rikulo/view.dart");
+#import("../../rikulo/lib/view.dart");
 
 #source("src/uxl/impl/Mirrors.dart");
 #source("src/uxl/impl/UIFactory.dart");

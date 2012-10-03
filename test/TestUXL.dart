@@ -1,9 +1,12 @@
 //Sample Code: Test UXL
 
 #import("dart:html");
-#import('package:rikulo/app.dart');
-#import('package:rikulo/view.dart');
-#import('package:rikulo_uxl/uxl.dart');
+//#import('package:rikulo/app.dart');
+//#import('package:rikulo/view.dart');
+//#import('package:rikulo_uxl/uxl.dart');
+#import('../../rikulo/lib/app.dart');
+#import('../../rikulo/lib/view.dart');
+#import('../lib/uxl.dart');
 
 class TestUXL extends Activity {
 
@@ -17,7 +20,7 @@ class TestUXL extends Activity {
       <View layout="type: linear">
         <CheckBox text="Apple"/>
         <CheckBox text="Orange"/>
-        <TextView data-class="list">
+        <TextView class="list">
           <attribute name="html">
             <ul>
               <li>This is the first item of TextView with HTML</li>

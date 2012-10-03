@@ -21,10 +21,6 @@ interface UIFactory default DefaultUIFactory {
   /** Assigns the given value to the property with the given name.
    */
   void setProperty(View view, String name, String value);
-  /** Assigns the text to the default property, which depends on
-   * the view.
-   */
-  void setDefaultText(View view, String value);
 }
 
 /** The default implementation that is based on mirror.
@@ -47,6 +43,7 @@ class DefaultUIFactory implements UIFactory {
       case "textbox": view = new TextBox(); break;
       case "switch": view = new Switch(); break;
       case "view": view = new View(); break;
+      default: throw new UnsupportedOperationException("Unknown $name");
     }
     if (view != null && parent != null)
       parent.addChild(view, before);
@@ -57,12 +54,6 @@ class DefaultUIFactory implements UIFactory {
     if (parent != null)
       parent.addChild(view, before);
     return view;
-  }
-  void setDefaultText(View view, String value) {
-    //TODO: user mirror to identify the most likely property: content->html->text->value
-    if (view is Style) (view as Style).content = value;
-    else if (view is TextView) (view as TextView).html = value;
-    else throw new UIException("Don't know to assign default text for $view");
   }
   void setProperty(View view, String name, String value) {
   //TODO: replace with Dart mirror

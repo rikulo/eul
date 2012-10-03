@@ -27,8 +27,8 @@ class UXLTemplate implements Template {
    * 
    * HTML:
    *
-   *     <div class="View" data-layout="type: linear">
-   *       UXL: <div class="Switch" data-value="true"></div>
+   *     <div data-view="View" data-layout="type: linear">
+   *       UXL: <div data-view="Switch" data-value="true"></div>
    *     </div>
    *
    * Java:
@@ -100,7 +100,7 @@ class UXLTemplate implements Template {
       }
 
       //3) create a view (including pseudo)
-      String s = attrs["class"];
+      String s = _getAttr(attrs, "view");
       if (s != null)
         name = s;
       else if (name == "div")
@@ -124,39 +124,16 @@ class UXLTemplate implements Template {
 
       //5) assign properties
       for (String key in attrs.getKeys()) {
-        switch (key) {
-          case "class": case "forEach": case "data-forEach":
-          case "if": case "data-if": case "unless": case "data-unless":
-          case "apply": case "data-apply":
-            continue; //ignore (since they have been processed)
-        }
+        if (_isSpecialAttr(key))
+          continue; //ignore (since they have been processed)
+
         uiFactory.setProperty(view,
           key.startsWith("data-") ? key.substring(5): key, attrs[key]);
       }
 
       //6) handle the child nodes
-      bool handled = false;
-      if (!view.isViewGroup()) {
-        bool special = false;
-        for (Node n in elem.nodes) {
-          if (n is Element) {
-            special = _isSpecialElement((n as Element).tagName.toLowerCase());
-            if (special)
-              break;
-          }
-        }
-
-        if (!special) { //handle it only if no special UXL element
-          final text = XMLUtil.getInner(node).trim();
-          if (!text.isEmpty())
-            uiFactory.setDefaultText(view, text);
-          handled = true;
-        }
-      }
-
-      if (!handled)
-        for (Node n in node.nodes)
-          _create(ctx, view, null, n);
+      for (Node n in node.nodes)
+        _create(ctx, view, null, n);
 
       //7) invoke controller at the end
       if (ctrl != null)
@@ -172,28 +149,23 @@ class UXLTemplate implements Template {
   }
   Iterable _getForEach(Element elem) => null; //TODO
   bool _isEffective(Element elem) => true; //TODO
-
-  /** Test if the given name is a special UXL element.
-   */
-  static bool _isSpecialElement(String name) {
-    switch (name) {
-      case "pseudo": case "attribute": case "template": case "variable":
-        return true;
-    }
-    return false;
-  }
-  /**
-   * [requiredBy] -- if specified, it the element that requires this attribute.
-   */
-  static String _getAttr(Map<String, String> attrs, String name, [String requiredBy]) {
-    String val = attrs[name];
-    if (val == null)
-      val = attrs["data-$name"];
-    if (val == null && requiredBy != null)
-      throw new UIException("<$requiredBy> requires the $name attribute");
-    return val;
-  }
 }
+
+/**
+ * [requiredBy] -- if specified, it the element that requires this attribute.
+ */
+String _getAttr(Map<String, String> attrs, String name, [String requiredBy]) {
+  String val = attrs[name];
+  if (val == null)
+    val = attrs["data-$name"];
+  if (val == null && requiredBy != null)
+    throw new UIException("<$requiredBy> requires the $name attribute");
+  return val;
+}
+bool _isSpecialAttr(String name) => _spcAttrs.contains(name);
+final Set<String> _spcAttrs =
+  new Set.from(["view", "forEach", "if", "unless", "apply",
+    "data-view", "data-forEach", "data-if", "data-unless", "data-apply"]);
 
 /** The context used to create views from a UXL document.
  */
