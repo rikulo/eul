@@ -6,8 +6,8 @@
  * The UI factory used to instantiate instances of [View], and
  * assigning the properties.
  */
-interface UIFactory default DefaultUIFactory {
-  UIFactory();
+abstract class UIFactory {
+  factory UIFactory() => new DefaultUIFactory();
 
   /** Instantiate an instance of the given name.
    * It also adds the view as a child of the given parent, if not null.
@@ -20,47 +20,31 @@ interface UIFactory default DefaultUIFactory {
   View newText(View parent, View before, String text);
   /** Assigns the given value to the property with the given name.
    */
-  void setProperty(View view, String name, String value);
+  void setProperty(View view, String name, Object value);
 }
 
 /** The default implementation that is based on mirror.
  */
 class DefaultUIFactory implements UIFactory {
   View newInstance(Mirrors mirrors, View parent, View before, String name) {
-  //TODO: replace with Dart mirror (and handle caseSensitive)
-    View view;
-    switch (name.toLowerCase()) {
-      case "button": view = new Button(); break;
-      case "canvas": view = new Canvas(); break;
-      case "checkbox": view = new CheckBox(); break;
-      case "dropdownlist": view = new DropDownList(); break;
-      case "image": view = new Image(); break;
-      case "radiogroup": view = new RadioGroup(); break;
-      case "section": view = new Section(); break;
-      case "scrollview": view = new ScrollView(); break;
-      case "style": view = new Style(); break;
-      case "textview": view = new TextView(); break;
-      case "textbox": view = new TextBox(); break;
-      case "switch": view = new Switch(); break;
-      case "view": view = new View(); break;
-      default: throw new UnsupportedOperationException("Unknown $name");
-    }
+    ClassMirror cm = mirrors.getViewMirror(name.toLowerCase());
+    if (cm == null)
+      throw new UIException("Cannot find the specified View class [$name]");
+    View view = ClassUtil.newInstanceByClassMirror(cm);
     if (view != null && parent != null)
       parent.addChild(view, before);
     return view;
   }
+
   View newText(View parent, View before, String text) {
     View view = new TextView(text);
     if (parent != null)
       parent.addChild(view, before);
     return view;
   }
-  void setProperty(View view, String name, String value) {
-  //TODO: replace with Dart mirror
+
+  void setProperty(View view, String name, Object value) {
     switch (name) {
-      case "id":
-        view.id = value;
-        break;
       case "class":
         view.classes.add(value);
         break;
@@ -73,13 +57,16 @@ class DefaultUIFactory implements UIFactory {
       case "profile":
         view.profile.text = value;
         break;
-      case "text":
-        (view as Dynamic).text = value;
-        break;
-      case "html":
-        (view as Dynamic).html = value;
-        break;
+      default:
+        _setProperty0(view, name, value);
     }
+  }
+
+  void _setProperty0(View view, String name, Object value) {
+    MethodMirror setter = ClassUtil.getSetter(reflect(view).type, name);
+    if (setter == null)
+      throw new UIException("Cannot find proper setter [$name] for $view");
+    ClassUtil.invoke(view, setter, [value]);
   }
 }
 

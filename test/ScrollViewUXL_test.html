@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="../lib/resource/css/view.css" />
+  	<style>
+.scroll-view {
+	border-radius: 6px;
+	border: 5px solid #888888;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+  	</style>
+  </head>
+  <body>
+  	<div id="uxl" style="display:none">
+  	<ScrollView class="scroll-view" profile="location: center center; width: 80%; height: 80%">
+  		<import name="rikulo:html as h"></import>
+  		<pseudo forEach="#{pseudoArray(30)}">
+  			<variable name="x">#{forEachStatus.index}</variable>
+  			<pseudo forEach="#{pseudoArray(30)}">
+  				<variable name="y">#{forEachStatus.index}</variable>
+  				<View style="border: 1px solid #553; background-color: #{CSS.color(250 - x * 4, 250 - y * 4, 200)}"
+  					  left="#{x * 50 + 2}" top="#{y * 50 + 2}"
+  					  width="46" height="46">
+  				</View>
+  			</pusedo>
+  		</pusedo>
+  	</ScrollView>
+  	</div>
+    <script type="application/dart" src="ScrollViewUXL_test.dart"></script>
+    <script src="../lib/resource/js/dart.js"></script>
+  </body>
+</html>
