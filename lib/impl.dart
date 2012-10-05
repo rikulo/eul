@@ -9,5 +9,5 @@
 #import("../../rikulo/lib/view.dart");
 #import("../../rikulo-el/lib/el.dart");
 
-#source("src/uxl/impl/Mirrors.dart");
-#source("src/uxl/impl/UIFactory.dart");
+#source("src/impl/Mirrors.dart");
+#source("src/impl/UIFactory.dart");

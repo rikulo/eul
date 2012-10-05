@@ -15,5 +15,5 @@
 #import("../../rikulo-el/lib/impl.dart", prefix : 'elimpl');
 #import("impl.dart");
 
-#source("src/uxl/UXLTemplate.dart");
-#source("src/uxl/Controller.dart");
+#source("src/UXLTemplate.dart");
+#source("src/Controller.dart");

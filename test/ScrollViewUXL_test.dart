@@ -14,7 +14,7 @@ class ScrollViewUXLTest extends Activity {
 
   void onCreate_() {
     title = "ScrollView Demo";
-    new UXLTemplate.fromNode(document.query("#uxl").elements[0].remove())
+    new UXLTemplate.fromNode(document.query("#uxl").elements[0]..remove())
     .create(mainView);
   }
 }
