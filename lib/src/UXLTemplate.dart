@@ -174,7 +174,9 @@ class UXLTemplate implements Template {
       return null;
     var result = ELUtil.eval(ectx, val);
     return result == null ? ListUtil.EMPTY_LIST:
-      result is! Iterable ? [result]: result;
+      result is Iterable ? result:
+      result is String ? (result as String).splitChars():
+      result is Map ? (result as Map).getValues(): [result];
   }
   bool _isEffective(_UXLELContextImpl ectx, Map<String, String> attrs, Element elm) {
     bool if0 = true;
