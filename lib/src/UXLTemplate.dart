@@ -257,8 +257,9 @@ class UXLTemplate implements Template {
 
     //2) handle special elements
     String tagName = _getAttr(attrs, "as");
-    if (tagName == null) tagName = elem.tagName.toLowerCase();
-    switch (tagName) {
+    if (tagName == null)
+      tagName = elem.tagName; //not toLowerCase here (since it will be output)
+    switch (tagName.toLowerCase()) {
       case "attribute":
       case "import":
       case "template":
