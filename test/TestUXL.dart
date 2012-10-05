@@ -26,6 +26,9 @@ class TestUXL extends Activity {
               <li>This is the first item of TextView with HTML</li>
               <li style="font-weight: bold">This is the second</li>
             </ul>
+            <ol>
+            <li forEach="#{['Henri', 'Tom', 'Simon', 'Tim']}">#{each}</li>
+            </ol>
           </attribute>
         </TextView>
       </View>

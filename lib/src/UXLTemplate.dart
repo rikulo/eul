@@ -66,10 +66,9 @@ class UXLTemplate implements Template {
       if (forEach != null) {
         final prev = ctx.getVariable("each");
         final prevStatus = ctx.getVariable("forEachStatus");
-        final _ForEachStatus status = new _ForEachStatus(prevStatus);
-        if (forEach is Collection)
-          status.length = forEach.length;
-        ctx.setVariable("forEachStatus", status);
+        final ForEachStatus status = new ForEachStatus(prevStatus,
+          forEach is Collection ? (forEach as Collection).length: null);
+       ctx.setVariable("forEachStatus", status);
         int j = 0;
         for (final each in forEach) {
           ctx.setVariable("each", each);
@@ -174,9 +173,8 @@ class UXLTemplate implements Template {
     if (val == null)
       return null;
     var result = ELUtil.eval(ectx, val);
-    if (result != null && result is! Iterable)
-      throw new UIException("Expect an Iterable for [forEach] attribute of $elm");
-    return result;
+    return result == null ? ListUtil.EMPTY_LIST:
+      result is! Iterable ? [result]: result;
   }
   bool _isEffective(_UXLELContextImpl ectx, Map<String, String> attrs, Element elm) {
     bool if0 = true;
@@ -234,9 +232,8 @@ class UXLTemplate implements Template {
     if (forEach != null) {
       final prev = ctx.getVariable("each");
       final prevStatus = ctx.getVariable("forEachStatus");
-      final _ForEachStatus status = new _ForEachStatus(prevStatus);
-      if (forEach is Collection)
-        status.length = forEach.length;
+      final ForEachStatus status = new ForEachStatus(prevStatus,
+          forEach is Collection ? (forEach as Collection).length: null);
       ctx.setVariable("forEachStatus", status);
       int j = 0;
       for (final each in forEach) {
@@ -401,18 +398,18 @@ class UXLVarELResolver implements ELResolver {
  * Represents the runtime information of each iteration caused by
  * 'forEach' in UXL
  */
-class _ForEachStatus {
+class ForEachStatus {
   /** Returns the status of the outter forEach */
-  final _ForEachStatus previous;
+  final ForEachStatus previous;
 
   /** Returns the object of the current round of the iteration */
   var each;
-
   /** Returns the index of the current round of the iteration */
   int index;
+  /** Returns the length of the iteration. If null, it means the length
+   * is unknown.
+   */
+  final int length;
 
-  /** Returns the length of the iteration */
-  int length;
-
-  _ForEachStatus(this.previous);
+  ForEachStatus(this.previous, this.length);
 }
