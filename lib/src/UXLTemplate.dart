@@ -84,11 +84,12 @@ class UXLTemplate implements Template {
       }
 
       //2) handle special elements
-      String name = elem.tagName.toLowerCase();
-      String s = _getAttr(attrs, "as");
-      if (s != null) name = s;
-      else if (name == "div")
-        name = "View"; //default
+      String name = _getAttr(attrs, "as");
+      if (name == null) {
+        name = elem.tagName.toLowerCase();
+        if (name == "div")
+          name = "View"; //default
+      }
       switch (name) {
       case "attribute":
         uiFactory.setProperty(parent,
@@ -115,6 +116,7 @@ class UXLTemplate implements Template {
 
       //4) instantiate controller
       Controller ctrl;
+      String s;
       if ((s = _getAttr(attrs, "apply")) != null) {
         final k = s.indexOf(':');
         final cls = (k >= 0 ? s.substring(k + 1): s).trim();
@@ -254,10 +256,9 @@ class UXLTemplate implements Template {
     }
 
     //2) handle special elements
-    String tagName = elem.tagName;
-    String s = _getAttr(attrs, "as");
-    if (s != null) tagName = s;
-    switch (tagName.toLowerCase()) {
+    String tagName = _getAttr(attrs, "as");
+    if (tagName == null) tagName = elem.tagName.toLowerCase();
+    switch (tagName) {
       case "attribute":
       case "import":
       case "template":
