@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ForEachHtml_test</title>
+    <link rel="stylesheet" href="ForEachHtml_test.css">
+  </head>
+  <body>
+    <h1>ForEachHtml_test</h1>
+    
+    <p>Hello world from Dart!</p>
+    
+    <div id="uxl" style="display:none">
+    <TextView>
+    	<attribute name="html">
+    		<ul>
+    		  <li data-forEach="#{['Henri', 'Tom', 'Simon', 'Tim']}"><p>Hello #{each}!</p></li>
+    		</ul>
+    	</attribute>
+    </TextView>
+    </div>
+
+    <script type="application/dart" src="ForEachHtml_test.dart"></script>
+    <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
+  </body>
+</html>

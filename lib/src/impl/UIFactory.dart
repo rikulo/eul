@@ -20,7 +20,7 @@ abstract class UIFactory {
   View newText(View parent, View before, String text);
   /** Assigns the given value to the property with the given name.
    */
-  void setProperty(View view, String name, Object value);
+  void setProperty(Mirrors mirrors, View view, String name, Object value);
 }
 
 /** The default implementation that is based on mirror.
@@ -43,7 +43,7 @@ class DefaultUIFactory implements UIFactory {
     return view;
   }
 
-  void setProperty(View view, String name, Object value) {
+  void setProperty(Mirrors mirrors, View view, String name, Object value) {
     switch (name) {
       case "class":
         view.classes.add(value);
@@ -58,12 +58,12 @@ class DefaultUIFactory implements UIFactory {
         view.profile.text = value;
         break;
       default:
-        _setProperty0(view, name, value);
+        _setProperty0(mirrors, view, name, value);
     }
   }
 
-  void _setProperty0(View view, String name, Object value) {
-    MethodMirror setter = ClassUtil.getSetter(reflect(view).type, name);
+  void _setProperty0(Mirrors mirrors, View view, String name, Object value) {
+    MethodMirror setter = mirrors.getSetterMirror(reflect(view).type.qualifiedName, name);
     if (setter == null)
       throw new UIException("Cannot find proper setter [$name] for $view");
     ClassUtil.invoke(view, setter, [value]);

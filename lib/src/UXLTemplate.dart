@@ -59,8 +59,11 @@ class UXLTemplate implements Template {
     View view;
     if (node is Element) {
       final Element elem = node as Element;
+      if ("parsererror" == elem.tagName)
+        throw new UIException(elem.text);
+
       final attrs = elem.attributes;
-      final _UXLELContextImpl ectx = new _UXLELContextImpl(ctx);
+      final _UXLELContext ectx = new _UXLELContext(ctx);
       //1) handle forEach, if and unless
       final Iterable forEach = loopForEach ? null: _getForEach(ectx, attrs, elem);
       if (forEach != null) {
@@ -91,15 +94,15 @@ class UXLTemplate implements Template {
         name = "View"; //default
       switch (name) {
       case "attribute":
-        uiFactory.setProperty(parent,
-          _getAttr(attrs, "name", name), _evalInner(ectx, elem));
+        uiFactory.setProperty(ctx.mirrors, parent,
+          _getAttr(attrs, "name", name), _evalInner(ectx, null, elem));
         return; //done
       case "import":
         for (final n in _getAttr(attrs, "name", name).split(','))
           ctx.mirrors.import(n.trim());
         return;
       case "variable":
-        ctx.setVariable(_getAttr(attrs, "name", name), _evalInner(ectx, elem));
+        ctx.setVariable(_getAttr(attrs, "name", name), _evalInner(ectx, null, elem));
         return;
       case "template":
         view.templates[_getAttr(attrs, "name", name)] = new UXLTemplate.fromNode(node);
@@ -141,15 +144,15 @@ class UXLTemplate implements Template {
           key = key.substring(5);
 
         if (_isStringAttr(key)) {
-          value = _resolveValue(ectx, value, ClassUtil.STRING_MIRROR);
+          value = _resolveString(ectx, value);
         } else {
-          MethodMirror setter = ClassUtil.getSetter(reflect(view).type, key);
+          MethodMirror setter = ctx.mirrors.getSetterMirror(reflect(view).type.qualifiedName, key);
           if (setter == null)
             throw new UIException("Cannot find proper setter [$key] for $view");
-          value = _resolveValue(ectx, value, ClassUtil.getCorrespondingClassMirror(setter.parameters[0].type));
+          value = ELUtil.eval(ectx, value, ClassUtil.getCorrespondingClassMirror(setter.parameters[0].type));
         }
 
-        uiFactory.setProperty(view, key, value);
+        uiFactory.setProperty(ctx.mirrors, view, key, value);
       }
 
       //6) handle the child nodes
@@ -168,17 +171,17 @@ class UXLTemplate implements Template {
     if (created != null && view != null)
       created.add(view);
   }
-  Iterable _getForEach(_UXLELContextImpl ectx, Map<String, String> attrs, Element elm) {
+  Iterable _getForEach(_UXLELContext ectx, Map<String, String> attrs, Element elm) {
     String val = _getAttr(attrs, 'forEach');
     if (val == null)
       return null;
     var result = ELUtil.eval(ectx, val);
-    return result == null ? ListUtil.EMPTY_LIST:
+    return result == null ? ListUtil.emptyList:
       result is Iterable ? result:
       result is String ? (result as String).splitChars():
       result is Map ? (result as Map).getValues(): [result];
   }
-  bool _isEffective(_UXLELContextImpl ectx, Map<String, String> attrs, Element elm) {
+  bool _isEffective(_UXLELContext ectx, Map<String, String> attrs, Element elm) {
     bool if0 = true;
     String val = _getAttr(attrs, "if");
     if (val != null)
@@ -193,42 +196,45 @@ class UXLTemplate implements Template {
 
   /** Evaluate the inner content of the given element.
    */
-  _evalInner(_UXLELContextImpl ectx, Element elem) {
+  _evalInner(_UXLELContext ectx, StringBuffer sb, Element elem) {
+    if (sb == null)
+      sb = new StringBuffer();
+
     switch (elem.nodes.length) {
-      case 0: return "";
+      case 0: return sb.toString();
       case 1:
         if (elem.nodes[0] is Text) {
           //evaluate wholeText before return
-          return ELUtil.eval(ectx, (elem.nodes[0] as Text).wholeText);
+          sb.add(_resolveString(ectx, (elem.nodes[0] as Text).wholeText));
+          return sb.toString();
         }
         break;
     }
-
-    final StringBuffer sb = new StringBuffer();
-    _xmlInner(ectx._ctx, sb, elem);
+    _xmlInner(ectx, sb, elem);
     return sb.toString();
   }
-  void _xmlInner(_Context ctx, StringBuffer sb, Element elem) {
+  void _xmlInner(_UXLELContext ectx, StringBuffer sb, Element elem) {
     for (Node n in elem.nodes){
       if (n is Element) {
         final e = n as Element;
-        if (_xmlBeg(ctx, sb, e)) {
-          _xmlInner(ctx, sb, e);
+        if (_xmlBeg(ectx, sb, e)) {
+          _evalInner(ectx, sb, e);
           _xmlEnd(sb, e);
         }
       } else if (n is Text) {
-        sb.add((n as Text).wholeText);
+        sb.add(_resolveString(ectx, (n as Text).wholeText));
       } else if (n is ProcessingInstruction) {
         final pi = n as ProcessingInstruction;
-        sb.add('<?').add(pi.target).add(' ').add(pi.data).add('?>');
+        sb.add('<?').add(pi.target).add(' ')
+          .add(_resolveString(ectx, pi.data)).add('?>');
       } else if (n is Comment) {
         sb.add('<!--').add((n as Comment).data).add('-->');
       }//ignore unrecogized nodes (such as Entity, Notation...)
     }
   }
-  bool _xmlBeg(_Context ctx, StringBuffer sb, Element elem, [bool loopForEach=false]) {
+  bool _xmlBeg(_UXLELContext ectx, StringBuffer sb, Element elem, [bool loopForEach=false]) {
+    final _Context ctx = ectx._ctx;
     final attrs = elem.attributes;
-    final _UXLELContextImpl ectx = new _UXLELContextImpl(ctx);
     //1) handle forEach, if and unless
     final Iterable forEach = loopForEach ? null: _getForEach(ectx, attrs, elem);
     if (forEach != null) {
@@ -242,8 +248,8 @@ class UXLTemplate implements Template {
         ctx.setVariable("each", each);
         status.index = j++;
         status.each = each;
-        _xmlBeg(ctx, sb, elem, true);
-        _xmlInner(ctx, sb, elem);
+        _xmlBeg(ectx, sb, elem, true);
+        _evalInner(ectx, sb, elem);
         _xmlEnd(sb, elem);
       }
       ctx.setVariable("forEachStatus", prevStatus);
@@ -263,13 +269,17 @@ class UXLTemplate implements Template {
       case "template":
         throw new UIException("$tagName not allowed in <attribute> and <variable>");
       case "variable":
-        ctx.setVariable(_getAttr(attrs, "name", tagName), _evalInner(ectx, elem));
+        ctx.setVariable(_getAttr(attrs, "name", tagName), _evalInner(ectx, null, elem));
         return false;
     }
     sb.add('<').add(tagName);
 
-    for (String key in attrs.getKeys())
-      sb.add(' ').add(key).add('="').add(attrs[key]).add('"');
+    for (String key in attrs.getKeys()) {
+      if (_isSpecialAttr(key))
+        continue;
+      sb.add(' ').add(key).add('="')
+        .add(_resolveString(ectx, attrs[key])).add('"');
+    }
 
     sb.add('>');
     return true;
@@ -290,16 +300,16 @@ String _getAttr(Map<String, String> attrs, String name, [String requiredBy]) {
     throw new UIException("<$requiredBy> requires the $name attribute");
   return val;
 }
-bool _isSpecialAttr(String name) => _spcAttrs.contains(name);
+bool _isSpecialAttr(String name) => _spcAttrs.contains(name.toLowerCase());
 final Set<String> _spcAttrs =
-  new Set.from(["as", "forEach", "if", "unless", "apply",
-    "data-as", "data-forEach", "data-if", "data-unless", "data-apply"]);
+  new Set.from(["as", "foreach", "if", "unless", "apply",
+    "data-as", "data-foreach", "data-if", "data-unless", "data-apply"]);
 bool _isStringAttr(String name) => _strAttrs.contains(name);
 final Set<String> _strAttrs =
   new Set.from(["class", "style", "layout", "profile",
                 "data-class", "data-style", "data-layout", "data-profile"]);
-_resolveValue(_UXLELContextImpl ectx, String expr, TypeMirror expectedType)
-  => ELUtil.eval(ectx, expr, expectedType);
+_resolveString(_UXLELContext ectx, String expr)
+=> ELUtil.eval(ectx, expr, ClassUtil.STRING_MIRROR);
 
 /** The context used to create views from a UXL document.
  */
@@ -327,9 +337,9 @@ class _Context {
 /**
  * The ELContext for UXL
  */
-class _UXLELContextImpl extends elimpl.ELContextImpl {
+class _UXLELContext extends elimpl.ELContextImpl {
   final _Context _ctx;
-  _UXLELContextImpl(_Context ctx)
+  _UXLELContext(_Context ctx)
       : this._ctx = ctx,
         super(new CompositeELResolver()
           ..add(new UXLVarELResolver(ctx))
@@ -384,16 +394,16 @@ class UXLVarELResolver implements ELResolver {
 
   //@Override
   bool isReadOnly(ELContext context, Object base, Object property)
-    => true;
+  => true;
 
   //@Override
   ClassMirror getCommonPropertyType(ELContext context, Object base)
-    => ClassUtil.OBJECT_MIRROR;
+  => ClassUtil.OBJECT_MIRROR;
 
   //@Override
   Object invoke(ELContext context, Object base, Object method,
                 List params, [Map<String, Object> namedArgs])
-    => null;
+  => null;
 }
 
 /**
