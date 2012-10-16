@@ -178,7 +178,7 @@ class UXLTemplate implements Template {
     if (val == null)
       return null;
     var result = ELUtil.eval(ectx, val);
-    return result == null ? ListUtil.emptyList:
+    return result == null ? ListUtil.EMPTY_LIST:
       result is Iterable ? result:
       result is String ? (result as String).splitChars():
       result is Map ? (result as Map).getValues(): [result];
@@ -339,7 +339,7 @@ class _Context {
 /**
  * The ELContext for UXL
  */
-class _UXLELContext extends elimpl.ELContextImpl {
+class _UXLELContext extends el_impl.ELContextImpl {
   final _Context _ctx;
   _UXLELContext(_Context ctx)
       : this._ctx = ctx,
@@ -347,7 +347,7 @@ class _UXLELContext extends elimpl.ELContextImpl {
           ..add(new UXLVarELResolver(ctx))
           ..add(new ClassELResolver())
           ..add(new LibELResolver())
-          ..add(elimpl.ELContextImpl.getDefaultResolver()));
+          ..add(el_impl.ELContextImpl.getDefaultResolver()));
 }
 
 /**

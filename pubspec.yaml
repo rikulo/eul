@@ -1,6 +1,6 @@
 name: rikulo_uxl
 version: 0.5.0
-description: > 
+description: >
   Rikulo UXL (User-interface eXtensible Language) is a markup language
   allowing developers to define user-interface in HTML 5 and XML.
 authors:
@@ -9,4 +9,5 @@ authors:
 homepage: http://rikulo.org
 dependencies:
   rikulo:
+    git: git://github.com/rikulo/rikulo.git
   rikulo_el:

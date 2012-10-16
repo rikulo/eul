@@ -13,11 +13,11 @@ Rikulo UXL is distributed under an Apache 2.0 License.
 ##Pub Packages
 
 ###Required
-    #import("package:rikulo_uxl/uxl.dart");
+    import 'package:rikulo_uxl/uxl.dart';
     //UXL classes and utilities
 
 ###Optional
-    #import("package:rikulo_uxl/impl.dart");
+    import 'package:rikulo_uxl/impl.dart';
     //UXL implementation for overriding UIFactory and other internal functions
 
 ##pubspec.yaml
