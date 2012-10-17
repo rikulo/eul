@@ -4,27 +4,134 @@
 
 * [Home](http://rikulo.org)
 * [Documentation](http://docs.rikulo.org)
-* [API Reference](http://api.rikulo.org)
+* [API Reference](http://api.rikulo.org/rikulo-uxl/latest/)
 * [Discussion](http://stackoverflow.com/questions/tagged/rikulo)
 * [Issues](https://github.com/rikulo/rikulo-uxl/issues)
 
-Rikulo UXL is distributed under an Apache 2.0 License.
+Rikulo UXL is distributed under the Apache 2.0 License.
 
-##Pub Packages
+##Installation
 
-###Required
-    import 'package:rikulo_uxl/uxl.dart';
-    //UXL classes and utilities
+Add this to your `pubspec.yaml` (or create it):
 
-###Optional
-    import 'package:rikulo_uxl/impl.dart';
-    //UXL implementation for overriding UIFactory and other internal functions
+    dependencies:
+      rikulo_uxl:
 
-##pubspec.yaml
-    name: ...
-	...
-	dependencies:
-	  rikulo_uxl:
+Then run the [Pub Package Manager](http://pub.dartlang.org/doc) (comes with the Dart SDK):
+
+    pub install
+
+##Usage
+
+Example 1: Everything starts from the UXLTemplate:
+
+(TextUXL.dart)
+
+    import 'dart:html';
+    import 'package:rikulo/view.dart';
+    import 'package:rikulo_uxl/uxl.dart'; //(required) UXL classes and utilities
+    import 'package:rikulo_uxl/impl.dart'; //(optional) UXL implementation
+
+    void main() {
+      final View mainView = new View()..addToDocument()
+      mainView.layout.text = "type: linear; orient: vertical";
+
+      //Define the template with a string
+      new UXLTemplate('''
+        <View layout="type: linear">
+          <View layout="type: linear; orient: vertical">
+            <CheckBox forEach="#{['Apple', 'Orange', 'Banana', 'Pomelo']}" text="#{each}"></CheckBox>
+          </View>
+          <TextView class="list">
+            <attribute name="html">
+              <ul>
+                <li>This is the first item of TextView with HTML</li>
+                <li style="font-weight: bold">This is the second</li>
+              </ul>
+              <ol>
+                <li forEach="#{['Henri', 'Tom', 'Simon', 'Tim']}">#{each}</li>
+              </ol>
+            </attribute>
+          </TextView>
+        </View>
+      ''').create(mainView);
+    }
+
+(TextUXL.html)
+
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="../packages/rikulo/resource/css/view.css" />
+      </head>
+      <body>
+        <style>
+        .list {
+          border: 2px solid #886;
+          border-radius: 6px;
+        }
+        </style>
+        <script type="application/dart" src="TestUXL2.dart"></script>
+        <script src="../packages/rikulo/resource/js/dart.js"></script>
+      </body>
+    </html>
+
+Example2: Or you can choose to read the template definition from the html page.
+
+(TextUXL2.dart)
+
+    import 'dart:html';
+    import 'package:rikulo/view.dart';
+    import 'package:rikulo_uxl/uxl.dart'; //(required) UXL classes and utilities
+    import 'package:rikulo_uxl/impl.dart'; //(optional) UXL implementation
+
+    void main() {
+      final View mainView = new View()..addToDocument()
+      mainView.layout.text = "type: linear; orient: vertical";
+
+      //Define the template from the element node "uxl"
+      new UXLTemplate.fromNode(document.query("#uxl").elements[0]..remove())
+          .create(mainView);
+    }
+
+(TextUXL2.html)
+
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="../packages/rikulo/resource/css/view.css" />
+      </head>
+      <body>
+        <style>
+        .list {
+          border: 2px solid #886;
+          border-radius: 6px;
+        }
+        </style>
+        <div id="uxl" style="display: none">
+          <View layout="type: linear">
+            <View layout="type: linear; orient: vertical">
+              <CheckBox forEach="#{['Apple', 'Orange', 'Banana', 'Pomelo']}" text="#{each}"></CheckBox>
+            </View>
+            <TextView class="list">
+              <attribute name="html">
+                <ul>
+                  <li>This is the first item of TextView with HTML</li>
+                  <li style="font-weight: bold">This is the second</li>
+                </ul>
+                <ol>
+                  <li forEach="#{['Henri', 'Tom', 'Simon', 'Tim']}">#{each}</li>
+                </ol>
+              </attribute>
+            </TextView>
+          </View>
+        </div>
+        <script type="application/dart" src="TestUXL2.dart"></script>
+        <script src="../packages/rikulo/resource/js/dart.js"></script>
+      </body>
+    </html>
 
 ##Advantages
 
