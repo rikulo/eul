@@ -4,7 +4,9 @@ import 'dart:html';
 import 'package:rikulo/view.dart';
 import 'package:rikulo_uxl/uxl.dart';
 
-void test1(View parent) {
+void main() {
+  final View mainView = new View()..addToDocument();
+  mainView.layout.text = "type: linear; orient: vertical";
   new UXLTemplate('''
     <View layout="type: linear">
       <CheckBox text="Apple"/>
@@ -21,16 +23,5 @@ void test1(View parent) {
         </attribute>
       </TextView>
     </View>
-    ''').create(parent);
-}
-void test2(View parent) {
-  new UXLTemplate.fromNode(document.query("#uxl").elements[0]..remove())
-    .create(parent);
-}
-
-void main() {
-  final View mainView = new View()..addToDocument();
-  mainView.layout.text = "type: linear; orient: vertical";
-  test1(mainView);
-  test2(mainView);
+    ''').create(mainView);
 }
