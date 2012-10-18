@@ -30,7 +30,7 @@ class _Mirrors implements Mirrors {
   final Set<String> _names;
 
   _Mirrors() : _libs = [], _names = new Set() {
-    import("rikulo:view");
+    import("rikulo_view");
   }
 
   void import(String name) {
@@ -111,7 +111,7 @@ class _MirrorsOfLib {
   ClassMirror getClassMirror(String className) => _libMirror.classes[className];
 }
 
-ClassMirror VIEW_MIRROR = ClassUtil.forName('rikulo:view.View');
+ClassMirror VIEW_MIRROR = ClassUtil.forName('rikulo_view.View');
 ClassMirror CONTROLLER_MIRROR = ClassUtil.forName('rikulo_uxl.Controller');
 _MirrorsOfLib _import(String name, String prefix) {
   if (_libs == null)

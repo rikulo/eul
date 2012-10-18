@@ -339,7 +339,7 @@ class _Context {
 /**
  * The ELContext for UXL
  */
-class _UXLELContext extends elimpl.ELContextImpl {
+class _UXLELContext extends el_impl.ELContextImpl {
   final _Context _ctx;
   _UXLELContext(_Context ctx)
       : this._ctx = ctx,
@@ -347,7 +347,7 @@ class _UXLELContext extends elimpl.ELContextImpl {
           ..add(new UXLVarELResolver(ctx))
           ..add(new ClassELResolver())
           ..add(new LibELResolver())
-          ..add(elimpl.ELContextImpl.getDefaultResolver()));
+          ..add(el_impl.ELContextImpl.getDefaultResolver()));
 }
 
 /**
