@@ -4,7 +4,7 @@
 
 /**
  * The controller in the MVC pattern. It is specified in the apply
- * attribute in a UXL document. For example,
+ * attribute in a EUL document. For example,
  *
  *     <View apply="FooController">
  *

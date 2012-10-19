@@ -1,21 +1,23 @@
-#Rikulo UXL
+#Rikulo EUL
 
-[Rikulo UXL](http://rikulo.org) (User-interface eXtensible Language) is a markup language that allows developers to define feature-rich user-interface in HTML 5 and XML.
+[Rikulo EUL](http://rikulo.org) (Embeddable User-interface Language) is a markup language allowing developers to define user-interface in HTML 5 and XML.
+
+Unlike [Rikulo UXL](https://github.com/rikulo/rikulo-eul), which compiles the markup language to Dart, EUL is interpreted at run time and can be embedded in Dart code or HTML pages.
 
 * [Home](http://rikulo.org)
 * [Documentation](http://docs.rikulo.org)
-* [API Reference](http://api.rikulo.org/rikulo-uxl/latest/)
+* [API Reference](http://api.rikulo.org/rikulo-eul/latest/)
 * [Discussion](http://stackoverflow.com/questions/tagged/rikulo)
-* [Issues](https://github.com/rikulo/rikulo-uxl/issues)
+* [Issues](https://github.com/rikulo/rikulo-eul/issues)
 
-Rikulo UXL is distributed under the Apache 2.0 License.
+Rikulo EUL is distributed under the Apache 2.0 License.
 
 ##Installation
 
 Add this to your `pubspec.yaml` (or create it):
 
     dependencies:
-      rikulo_uxl:
+      rikulo_eul:
 
 Then run the [Pub Package Manager](http://pub.dartlang.org/doc) (comes with the Dart SDK):
 
@@ -23,21 +25,21 @@ Then run the [Pub Package Manager](http://pub.dartlang.org/doc) (comes with the 
 
 ##Usage
 
-Example 1: Everything starts from the UXLTemplate:
+Example 1: Everything starts from the EULTemplate:
 
-(TextUXL.dart)
+(TextEUL.dart)
 
     import 'dart:html';
     import 'package:rikulo/view.dart';
-    import 'package:rikulo_uxl/uxl.dart'; //(required) UXL classes and utilities
-    import 'package:rikulo_uxl/impl.dart'; //(optional) UXL implementation
+    import 'package:rikulo_eul/eul.dart'; //(required) EUL classes and utilities
+    import 'package:rikulo_eul/impl.dart'; //(optional) EUL implementation
 
     void main() {
       final View mainView = new View()..addToDocument()
       mainView.layout.text = "type: linear; orient: vertical";
 
       //Define the template with a string
-      new UXLTemplate('''
+      new EULTemplate('''
         <View layout="type: linear">
           <View layout="type: linear; orient: vertical">
             <CheckBox forEach="#{['Apple', 'Orange', 'Banana', 'Pomelo']}" text="#{each}"></CheckBox>
@@ -57,7 +59,7 @@ Example 1: Everything starts from the UXLTemplate:
       ''').create(mainView);
     }
 
-(TextUXL.html)
+(TextEUL.html)
 
     <!DOCTYPE html>
     <html>
@@ -72,30 +74,30 @@ Example 1: Everything starts from the UXLTemplate:
           border-radius: 6px;
         }
         </style>
-        <script type="application/dart" src="TestUXL2.dart"></script>
+        <script type="application/dart" src="TestEUL2.dart"></script>
         <script src="../packages/rikulo/resource/js/dart.js"></script>
       </body>
     </html>
 
 Example2: Or you can choose to read the template definition from the html page.
 
-(TextUXL2.dart)
+(TextEUL2.dart)
 
     import 'dart:html';
     import 'package:rikulo/view.dart';
-    import 'package:rikulo_uxl/uxl.dart'; //(required) UXL classes and utilities
-    import 'package:rikulo_uxl/impl.dart'; //(optional) UXL implementation
+    import 'package:rikulo_eul/eul.dart'; //(required) EUL classes and utilities
+    import 'package:rikulo_eul/impl.dart'; //(optional) EUL implementation
 
     void main() {
       final View mainView = new View()..addToDocument()
       mainView.layout.text = "type: linear; orient: vertical";
 
-      //Define the template from the element node "uxl"
-      new UXLTemplate.fromNode(document.query("#uxl").elements[0]..remove())
+      //Define the template from the element node "eul"
+      new EULTemplate.fromNode(document.query("#eul").elements[0]..remove())
           .create(mainView);
     }
 
-(TextUXL2.html)
+(TextEUL2.html)
 
     <!DOCTYPE html>
     <html>
@@ -110,7 +112,7 @@ Example2: Or you can choose to read the template definition from the html page.
           border-radius: 6px;
         }
         </style>
-        <div id="uxl" style="display: none">
+        <div id="eul" style="display: none">
           <View layout="type: linear">
             <View layout="type: linear; orient: vertical">
               <CheckBox forEach="#{['Apple', 'Orange', 'Banana', 'Pomelo']}" text="#{each}"></CheckBox>
@@ -128,7 +130,7 @@ Example2: Or you can choose to read the template definition from the html page.
             </TextView>
           </View>
         </div>
-        <script type="application/dart" src="TestUXL2.dart"></script>
+        <script type="application/dart" src="TestEUL2.dart"></script>
         <script src="../packages/rikulo/resource/js/dart.js"></script>
       </body>
     </html>
@@ -137,7 +139,7 @@ Example2: Or you can choose to read the template definition from the html page.
 
 * The user interface can be defined easily in a similar manner to HTML pages.
 * The content can be indexed by search engines.
-* Supporting MVC/MVP for improving the separation of view, model and controller.
+* MVC/MVP and data-binding for improving the separation of view, model and controller.
 * Ready for MVVM design pattern.
 
 ##Notes to Contributors
@@ -146,7 +148,7 @@ Example2: Or you can choose to read the template definition from the html page.
 
 Rikulo is easy to extend. The simplest way to enhance Rikulo is to [create a new repository](https://help.github.com/articles/create-a-repo) and add your own great widgets and libraries to it.
 
-###Fork Rikulo
+###Fork Rikulo EUL
 
 If you'd like to contribute back to the core, you can [fork this repository](https://help.github.com/articles/fork-a-repo) and send us a pull request, when it is ready.
 

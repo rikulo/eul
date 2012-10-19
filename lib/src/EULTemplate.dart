@@ -3,23 +3,23 @@
 // Author: tomyeh
 
 /**
- * The template representing a UXL document.
+ * The template representing a EUL document.
  */
-class UXLTemplate implements Template {
+class EULTemplate implements Template {
   final List<Node> _nodes;
 
   /** Instantiate a template from a string, which must be a valid XML document.
    *
    * Examples:
    *
-   *     new UXLTemplate('''
+   *     new EULTemplate('''
    *        <View layout="type: linear">
-   *          UXL: <Switch value="true">
+   *          EUL: <Switch value="true">
    *        </View>
    *        ''');
    */
-  factory UXLTemplate(String xml)
-  => new UXLTemplate.fromNode(
+  factory EULTemplate(String xml)
+  => new EULTemplate.fromNode(
       new DOMParser().parseFromString(xml, "text/xml").documentElement);
   /** Instantiated from a fragment of a DOM tree.
    *
@@ -28,18 +28,18 @@ class UXLTemplate implements Template {
    * HTML:
    *
    *     <div data-as="View" data-layout="type: linear">
-   *       UXL: <div data-as="Switch" data-value="true"></div>
+   *       EUL: <div data-as="Switch" data-value="true"></div>
    *     </div>
    *
    * Dart:
    *
    *     new Tempalte.fromNode(document.query("#templ").elements[0]..remove());
    *
-   * Notice that it is OK to use the XML format as described in [UXLTemplate] constructor,
+   * Notice that it is OK to use the XML format as described in [EULTemplate] constructor,
    * though it is not a valid HTML document.
    */
-  UXLTemplate.fromNode(Node node): _nodes = [node];
-  UXLTemplate.fromNodes(List<Node> nodes): _nodes = nodes;
+  EULTemplate.fromNode(Node node): _nodes = [node];
+  EULTemplate.fromNodes(List<Node> nodes): _nodes = nodes;
 
   /** Creates and returns the views based this template.
    *
@@ -63,7 +63,7 @@ class UXLTemplate implements Template {
         throw new UIException(elem.text);
 
       final attrs = elem.attributes;
-      final _UXLELContext ectx = new _UXLELContext(ctx);
+      final _EULELContext ectx = new _EULELContext(ctx);
       //1) handle forEach, if and unless
       final Iterable forEach = loopForEach ? null: _getForEach(ectx, attrs, elem);
       if (forEach != null) {
@@ -106,7 +106,7 @@ class UXLTemplate implements Template {
         ctx.setVariable(_getAttr(attrs, "name", name), _evalInner(ectx, null, elem));
         return;
       case "template":
-        view.templates[_getAttr(attrs, "name", name)] = new UXLTemplate.fromNode(node);
+        view.templates[_getAttr(attrs, "name", name)] = new EULTemplate.fromNode(node);
         return; //done
       case "pseudo":
         for (Node n in node.nodes)
@@ -173,7 +173,7 @@ class UXLTemplate implements Template {
     if (created != null && view != null)
       created.add(view);
   }
-  Iterable _getForEach(_UXLELContext ectx, Map<String, String> attrs, Element elm) {
+  Iterable _getForEach(_EULELContext ectx, Map<String, String> attrs, Element elm) {
     String val = _getAttr(attrs, 'forEach');
     if (val == null)
       return null;
@@ -183,7 +183,7 @@ class UXLTemplate implements Template {
       result is String ? (result as String).splitChars():
       result is Map ? (result as Map).getValues(): [result];
   }
-  bool _isEffective(_UXLELContext ectx, Map<String, String> attrs, Element elm) {
+  bool _isEffective(_EULELContext ectx, Map<String, String> attrs, Element elm) {
     bool if0 = true;
     String val = _getAttr(attrs, "if");
     if (val != null)
@@ -198,7 +198,7 @@ class UXLTemplate implements Template {
 
   /** Evaluate the inner content of the given element.
    */
-  _evalInner(_UXLELContext ectx, StringBuffer sb, Element elem) {
+  _evalInner(_EULELContext ectx, StringBuffer sb, Element elem) {
     if (sb == null)
       sb = new StringBuffer();
 
@@ -215,7 +215,7 @@ class UXLTemplate implements Template {
     _xmlInner(ectx, sb, elem);
     return sb.toString();
   }
-  void _xmlInner(_UXLELContext ectx, StringBuffer sb, Element elem) {
+  void _xmlInner(_EULELContext ectx, StringBuffer sb, Element elem) {
     for (Node n in elem.nodes){
       if (n is Element) {
         final e = n as Element;
@@ -234,7 +234,7 @@ class UXLTemplate implements Template {
       }//ignore unrecogized nodes (such as Entity, Notation...)
     }
   }
-  bool _xmlBeg(_UXLELContext ectx, StringBuffer sb, Element elem, [bool loopForEach=false]) {
+  bool _xmlBeg(_EULELContext ectx, StringBuffer sb, Element elem, [bool loopForEach=false]) {
     final _Context ctx = ectx._ctx;
     final attrs = elem.attributes;
     //1) handle forEach, if and unless
@@ -310,10 +310,10 @@ bool _isStringAttr(String name) => _strAttrs.contains(name);
 final Set<String> _strAttrs =
   new Set.from(["class", "style", "layout", "profile",
                 "data-class", "data-style", "data-layout", "data-profile"]);
-_resolveString(_UXLELContext ectx, String expr)
+_resolveString(_EULELContext ectx, String expr)
 => ELUtil.eval(ectx, expr, ClassUtil.STRING_MIRROR);
 
-/** The context used to create views from a UXL document.
+/** The context used to create views from a EUL document.
  */
 class _Context {
   final Mirrors mirrors;
@@ -337,26 +337,26 @@ class _Context {
 }
 
 /**
- * The ELContext for UXL
+ * The ELContext for EUL
  */
-class _UXLELContext extends el_impl.ELContextImpl {
+class _EULELContext extends el_impl.ELContextImpl {
   final _Context _ctx;
-  _UXLELContext(_Context ctx)
+  _EULELContext(_Context ctx)
       : this._ctx = ctx,
         super(new CompositeELResolver()
-          ..add(new UXLVarELResolver(ctx))
+          ..add(new EULVarELResolver(ctx))
           ..add(new ClassELResolver())
           ..add(new LibELResolver())
           ..add(el_impl.ELContextImpl.getDefaultResolver()));
 }
 
 /**
- * ELResolver for UXL context variables
+ * ELResolver for EUL context variables
  */
-class UXLVarELResolver implements ELResolver {
+class EULVarELResolver implements ELResolver {
   final _Context _ctx;
 
-  UXLVarELResolver(this._ctx);
+  EULVarELResolver(this._ctx);
 
   //@Override
   Object getValue(ELContext context, Object base, Object property) {
@@ -410,7 +410,7 @@ class UXLVarELResolver implements ELResolver {
 
 /**
  * Represents the runtime information of each iteration caused by
- * 'forEach' in UXL
+ * 'forEach' in EUL
  */
 class ForEachStatus {
   /** Returns the status of the outter forEach */

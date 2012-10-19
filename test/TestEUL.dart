@@ -1,13 +1,13 @@
-//Sample Code: Test UXL
+//Sample Code: Test EUL
 
 import 'dart:html';
 import 'package:rikulo/view.dart';
-import 'package:rikulo_uxl/uxl.dart';
+import 'package:rikulo_eul/eul.dart';
 
 void main() {
   final View mainView = new View()..addToDocument();
   mainView.layout.text = "type: linear; orient: vertical";
-  new UXLTemplate('''
+  new EULTemplate('''
     <View layout="type: linear">
       <CheckBox text="Apple"/>
       <CheckBox text="Orange"/>

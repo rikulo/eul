@@ -3,7 +3,7 @@
 // Author: tomyeh
 
 /**
- * The mirrors used in a UXL document.
+ * The mirrors used in a EUL document.
  */
 interface Mirrors default _Mirrors {
   Mirrors();
@@ -112,7 +112,7 @@ class _MirrorsOfLib {
 }
 
 ClassMirror VIEW_MIRROR = ClassUtil.forName('rikulo_view.View');
-ClassMirror CONTROLLER_MIRROR = ClassUtil.forName('rikulo_uxl.Controller');
+ClassMirror CONTROLLER_MIRROR = ClassUtil.forName('rikulo_eul.Controller');
 _MirrorsOfLib _import(String name, String prefix) {
   if (_libs == null)
     _libs = {};
