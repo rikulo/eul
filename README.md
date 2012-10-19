@@ -144,7 +144,7 @@ Example2: Or you can choose to read the template definition from the html page.
 * The content can be indexed by search engines if you embed it as HTML fragment.
 * Ready for MVVM design pattern.
 
-##Cons
+###Cons
 
 * It is interpreted at run time, so the performance is a bit slower and the tree shaking of dart2js might not work as effective as expressing UI in Dart or in [UXL](https://github.com/rikulo/rikulo-uxl).
 
