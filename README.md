@@ -2,7 +2,9 @@
 
 [Rikulo EUL](http://rikulo.org) (Embeddable User-interface Language) is a markup language allowing developers to define user-interface in HTML 5 and XML.
 
-Unlike [Rikulo UXL](https://github.com/rikulo/rikulo-uxl), which compiles the markup language to Dart, EUL is interpreted at run time and can be embedded in Dart code or HTML pages.
+Unlike [Rikulo UXL](https://github.com/rikulo/rikulo-uxl), which compiles the markup language to Dart, EUL is interpreted at run time and can be embedded in Dart code (as a string) or HTML pages (as a HTML fragment).
+
+> Rikulo UXL is an experimental project heavily depending on mirrors. [Rikulo UXL](https://github.com/rikulo/rikulo-uxl) is suggested instead if applicable.
 
 * [Home](http://rikulo.org)
 * [Documentation](http://docs.rikulo.org)
@@ -156,7 +158,7 @@ Example2: Or you can choose to read the template definition from the html page.
 
 ###Cons
 
-* It is interpreted at run time, so the performance is a bit slower and the tree shaking of dart2js might not work as effective as expressing UI in Dart or in [UXL](https://github.com/rikulo/rikulo-uxl).
+* It is interpreted at run time based on mirrors, so the performance is somehow slower and the tree shaking of dart2js might not work as effective as expressing UI in Dart or in [UXL](https://github.com/rikulo/rikulo-uxl).
 
 ##Notes to Contributors
 
