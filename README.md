@@ -4,8 +4,6 @@
 
 Unlike [Rikulo UXL](https://github.com/rikulo/rikulo-uxl), which compiles the markup language to Dart, EUL is interpreted at run time and can be embedded in Dart code (as a string) or HTML pages (as a HTML fragment).
 
-> Rikulo UXL is an experimental project heavily depending on mirrors. [Rikulo UXL](https://github.com/rikulo/rikulo-uxl) is suggested instead if applicable.
-
 * [Home](http://rikulo.org)
 * [Documentation](http://docs.rikulo.org)
 * [API Reference](http://api.rikulo.org/rikulo-eul/latest/)
@@ -149,6 +147,8 @@ Example2: Or you can choose to read the template definition from the html page.
 
 ##Pros and Cons
 
+> Rikulo UXL depends on mirrors heavily. For better performance and smaller footprint, it is suggested to use [Rikulo UXL](https://github.com/rikulo/rikulo-uxl) instead if applicable.
+
 ###Pros
 
 * The user interface can be defined easily in a similar manner to HTML pages.
@@ -158,7 +158,7 @@ Example2: Or you can choose to read the template definition from the html page.
 
 ###Cons
 
-* It is interpreted at run time based on mirrors, so the performance is somehow slower and the tree shaking of dart2js might not work as effective as expressing UI in Dart or in [UXL](https://github.com/rikulo/rikulo-uxl).
+* It is interpreted at run time based on mirrors, so the performance is slower and the tree shaking of `dart2js` might not work as effective as expressing UI in Dart or in [UXL](https://github.com/rikulo/rikulo-uxl).
 
 ##Notes to Contributors
 
