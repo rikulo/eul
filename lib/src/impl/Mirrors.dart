@@ -157,11 +157,11 @@ MethodMirror _getSetterIgnoreCases(ClassMirror cm, String name) {
   String sname = "$lname=";
   String mname = "set$lname";
   do {
-    for (final setternm in cm.setters.getKeys()) {
+    for (final setternm in cm.setters.keys) {
       if (setternm.toLowerCase() == sname) //assume the same
         return cm.setters[setternm];
     }
-    for (final setternm in cm.methods.getKeys()) {
+    for (final setternm in cm.methods.keys) {
       MethodMirror setter = cm.methods[setternm];
       if (setternm.toLowerCase() == mname && setter.parameters.length == 1)
         return setter;

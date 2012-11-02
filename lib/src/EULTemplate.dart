@@ -2,6 +2,35 @@
 //History: Thu, Sep 06, 2012  3:34:34 PM
 // Author: tomyeh
 
+/** Returns the value of the variable with the given name.
+ */
+typedef Resolver(String name);
+/** A template for instantiating views.
+ *
+ * The map of template is stored in View's data attribute called `templates`.
+ */
+interface Template {
+  /** Creates and returns the views based this template.
+   *
+   * + [parent] the parent. If null, the created view(s) won't have parent; nor attached.
+   * + [before] the child of the parent that new views will be inserted before.
+   * Ignored if null.
+   */
+  List<View> create([View parent, View before, Resolver resolver]);
+}
+
+/** Returns the template that is associated with the given view.
+ */
+Template getTemplate(View view, String name) {
+  Map<String, Template> ts = view.dataAttributes["templates"];
+  return ts == null ? null: ts[name];
+}
+void _setTemplate(View view, String name, Template template) {
+  Map<String, Template> ts = view.dataAttributes["templates"];
+  if (ts == null)
+    view.dataAttributes["templates"] = ts = new Map();
+  ts[name] = template;
+}
 /**
  * The template representing a EUL document.
  */
@@ -106,7 +135,7 @@ class EULTemplate implements Template {
         ctx.setVariable(_getAttr(attrs, "name", name), _evalInner(ectx, null, elem));
         return;
       case "template":
-        view.templates[_getAttr(attrs, "name", name)] = new EULTemplate.fromNode(node);
+        _setTemplate(view, _getAttr(attrs, "name", name), new EULTemplate.fromNode(node));
         return; //done
       case "pseudo":
         for (Node n in node.nodes)
@@ -166,7 +195,7 @@ class EULTemplate implements Template {
         ctrl.apply(view);
     } else if (node is Text) {
       final text = (node as Text).wholeText.trim();
-      if (!text.isEmpty())
+      if (!text.isEmpty)
         view = uiFactory.newText(parent, before, text);
     }
 
@@ -181,7 +210,7 @@ class EULTemplate implements Template {
     return result == null ? ListUtil.EMPTY_LIST:
       result is Iterable ? result:
       result is String ? (result as String).splitChars():
-      result is Map ? (result as Map).getValues(): [result];
+      result is Map ? (result as Map).values: [result];
   }
   bool _isEffective(_EULELContext ectx, Map<String, String> attrs, Element elm) {
     bool if0 = true;
@@ -318,7 +347,7 @@ _resolveString(_EULELContext ectx, String expr)
 class _Context {
   final Mirrors mirrors;
   final Resolver _userResolver;
-  final Map<String, Dynamic> _vars;
+  final Map<String, dynamic> _vars;
   Resolver _resolver;
 
   _Context(this.mirrors, this._userResolver): _vars = {} {
