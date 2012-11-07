@@ -137,19 +137,19 @@ class EULTemplate implements Template {
       case "template":
         _setTemplate(view, _getAttr(attrs, "name", name), new EULTemplate.fromNode(node));
         return; //done
-      case "pseudo":
+      case "apply":
         for (Node n in node.nodes)
           _create(ctx, parent, null, n, created);
         return; //done
       }
 
-      //3) create a view (including pseudo)
+      //3) create a view (including apply)
       view = uiFactory.newInstance(ctx.mirrors, parent, before, name);
 
       //4) instantiate controller
       Controller ctrl;
       String s;
-      if ((s = _getAttr(attrs, "apply")) != null) {
+      if ((s = _getAttr(attrs, "control")) != null) {
         final k = s.indexOf(':');
         final cls = (k >= 0 ? s.substring(k + 1): s).trim();
         if (cls.startsWith("#{")) {
