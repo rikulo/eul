@@ -2,13 +2,13 @@
 
 [Rikulo EUL](http://rikulo.org) (Embeddable User-interface Language) is a markup language allowing developers to define user-interface in HTML 5 and XML.
 
-Unlike [Rikulo UXL](https://github.com/rikulo/rikulo-uxl), which compiles the markup language to Dart, EUL is interpreted at run time and can be embedded in Dart code (as a string) or HTML pages (as a HTML fragment).
+Unlike [Rikulo UXL](https://github.com/rikulo/uxl), which compiles the markup language to Dart, EUL is interpreted at run time and can be embedded in Dart code (as a string) or HTML pages (as a HTML fragment).
 
 * [Home](http://rikulo.org)
 * [Documentation](http://docs.rikulo.org)
-* [API Reference](http://api.rikulo.org/rikulo-eul/latest/)
+* [API Reference](http://api.rikulo.org/eul/latest/)
 * [Discussion](http://stackoverflow.com/questions/tagged/rikulo)
-* [Issues](https://github.com/rikulo/rikulo-eul/issues)
+* [Issues](https://github.com/rikulo/eul/issues)
 
 Rikulo EUL is distributed under the Apache 2.0 License.
 
@@ -29,7 +29,7 @@ To install stuff that is still in development, add this to your `pubspec.yam`:
 
     dependencies:
       rikulo_eul:
-        git: git://github.com/rikulo/rikulo-eul.git
+        git: git://github.com/rikulo/eul.git
 
 For more information, please refer to [Pub: Dependencies](http://pub.dartlang.org/doc/pubspec.html#dependencies).
 
@@ -147,7 +147,7 @@ Example2: Or you can choose to read the template definition from the html page.
 
 ##Pros and Cons
 
-> Rikulo UXL depends on mirrors heavily. For better performance and smaller footprint, it is suggested to use [Rikulo UXL](https://github.com/rikulo/rikulo-uxl) instead if applicable.
+> Rikulo UXL depends on mirrors heavily. For better performance and smaller footprint, it is suggested to use [Rikulo UXL](https://github.com/rikulo/uxl) instead if applicable.
 
 ###Pros
 
@@ -158,7 +158,7 @@ Example2: Or you can choose to read the template definition from the html page.
 
 ###Cons
 
-* It is interpreted at run time based on mirrors, so the performance is slower and the tree shaking of `dart2js` might not work as effective as expressing UI in Dart or in [UXL](https://github.com/rikulo/rikulo-uxl).
+* It is interpreted at run time based on mirrors, so the performance is slower and the tree shaking of `dart2js` might not work as effective as expressing UI in Dart or in [UXL](https://github.com/rikulo/uxl).
 
 ##Notes to Contributors
 
