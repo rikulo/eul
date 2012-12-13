@@ -2,6 +2,8 @@
 //History: Thu, Sep 06, 2012  3:34:34 PM
 // Author: tomyeh
 
+part of rikulo_eul;
+
 /** Returns the value of the variable with the given name.
  */
 typedef Resolver(String name);
@@ -9,7 +11,7 @@ typedef Resolver(String name);
  *
  * The map of template is stored in View's data attribute called `templates`.
  */
-interface Template {
+abstract class Template {
   /** Creates and returns the views based this template.
    *
    * + [parent] the parent. If null, the created view(s) won't have parent; nor attached.
@@ -49,7 +51,7 @@ class EULTemplate implements Template {
    */
   factory EULTemplate(String xml)
   => new EULTemplate.fromNode(
-      new DOMParser().parseFromString(xml, "text/xml").documentElement);
+      new DomParser().parseFromString(xml, "text/xml").documentElement);
   /** Instantiated from a fragment of a DOM tree.
    *
    * Examples:
@@ -89,7 +91,7 @@ class EULTemplate implements Template {
     if (node is Element) {
       final Element elem = node as Element;
       if ("parsererror" == elem.tagName)
-        throw new UIException(elem.text);
+        throw new UiError(elem.text);
 
       final attrs = elem.attributes;
       final _EULELContext ectx = new _EULELContext(ctx);
@@ -157,7 +159,7 @@ class EULTemplate implements Template {
         } else {
           ClassMirror mirror = ctx.mirrors.getControllerMirror(cls);
           if (mirror == null)
-            throw new UIException("Cannot find the specified controller class [$cls]");
+            throw new UiError("Cannot find the specified controller class [$cls]");
           ctrl = ClassUtil.newInstanceByClassMirror(mirror);
         }
         if (k > 0)
@@ -165,7 +167,7 @@ class EULTemplate implements Template {
       }
 
       //5) assign properties
-      for (String key in attrs.getKeys()) {
+      for (String key in attrs.keys) {
         if (_isSpecialAttr(key))
           continue; //ignore (since they have been processed)
 
@@ -179,7 +181,7 @@ class EULTemplate implements Template {
         } else {
           MethodMirror setter = ctx.mirrors.getSetterMirror(reflect(view).type.qualifiedName, key);
           if (setter == null)
-            throw new UIException("Cannot find proper setter [$key] for $view");
+            throw new UiError("Cannot find proper setter [$key] for $view");
           value = ELUtil.eval(ectx, value, ClassUtil.getCorrespondingClassMirror(setter.parameters[0].type));
         }
 
@@ -207,7 +209,7 @@ class EULTemplate implements Template {
     if (val == null)
       return null;
     var result = ELUtil.eval(ectx, val);
-    return result == null ? ListUtil.EMPTY_LIST:
+    return result == null ? EMPTY_LIST:
       result is Iterable ? result:
       result is String ? (result as String).splitChars():
       result is Map ? (result as Map).values: [result];
@@ -298,14 +300,14 @@ class EULTemplate implements Template {
       case "attribute":
       case "import":
       case "template":
-        throw new UIException("$tagName not allowed in <attribute> and <variable>");
+        throw new UiError("$tagName not allowed in <attribute> and <variable>");
       case "variable":
         ctx.setVariable(_getAttr(attrs, "name", tagName), _evalInner(ectx, null, elem));
         return false;
     }
     sb.add('<').add(tagName);
 
-    for (String key in attrs.getKeys()) {
+    for (String key in attrs.keys) {
       if (_isSpecialAttr(key))
         continue;
       sb.add(' ').add(key).add('="')
@@ -328,7 +330,7 @@ String _getAttr(Map<String, String> attrs, String name, [String requiredBy]) {
   if (val == null)
     val = attrs["data-$name"];
   if (val == null && requiredBy != null)
-    throw new UIException("<$requiredBy> requires the $name attribute");
+    throw new UiError("<$requiredBy> requires the $name attribute");
   return val;
 }
 bool _isSpecialAttr(String name) => _spcAttrs.contains(name.toLowerCase());
@@ -368,7 +370,7 @@ class _Context {
 /**
  * The ELContext for EUL
  */
-class _EULELContext extends el_impl.ELContextImpl {
+class _EULELContext extends elimpl.ELContextImpl {
   final _Context _ctx;
   _EULELContext(_Context ctx)
       : this._ctx = ctx,
@@ -376,7 +378,7 @@ class _EULELContext extends el_impl.ELContextImpl {
           ..add(new EULVarELResolver(ctx))
           ..add(new ClassELResolver())
           ..add(new LibELResolver())
-          ..add(el_impl.ELContextImpl.getDefaultResolver()));
+          ..add(elimpl.ELContextImpl.getDefaultResolver()));
 }
 
 /**
@@ -390,7 +392,7 @@ class EULVarELResolver implements ELResolver {
   //@Override
   Object getValue(ELContext context, Object base, Object property) {
     if (context == null)
-      throw const NullPointerException();
+      throw new ArgumentError("context: null");
 
     if (base != null || property == null)
       return null;

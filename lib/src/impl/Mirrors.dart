@@ -2,11 +2,14 @@
 //History: Sat, Sep 08, 2012 12:31:38 AM
 // Author: tomyeh
 
+part of rikulo_eulimpl;
+
 /**
  * The mirrors used in a EUL document.
  */
-interface Mirrors default _Mirrors {
-  Mirrors();
+abstract class Mirrors {
+  factory Mirrors()
+  => new _Mirrors();
 
   void import(String name);
   /** Returns the class mirror of the view ([View]) with given name.
@@ -122,7 +125,7 @@ _MirrorsOfLib _import(String name, String prefix) {
     //load from mirrors
     LibraryMirror lm = currentMirrorSystem().libraries[name];
     if (lm == null)
-      throw new UIException("Cannot find the specified library [$name]");
+      throw new UiError("Cannot find the specified library [$name]");
     _libs[name] = lib = new _MirrorsOfLib(lm, prefix);
 
     lm.classes.forEach((String k, ClassMirror v) {

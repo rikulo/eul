@@ -8,6 +8,7 @@ authors:
 - Henri Chen <henrichen@rikulo.org>
 homepage: http://rikulo.org
 dependencies:
-  rikulo:
-    git: git://github.com/rikulo/rikulo.git
-  rikulo_el:
+  unittest: any
+  rikulo_commons: { git: git://github.com/rikulo/commons.git }
+  rikulo: { git: git://github.com/rikulo/rikulo.git }
+  rikulo_el: { git: git://github.com/rikulo/el.git }
