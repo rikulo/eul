@@ -11,7 +11,7 @@ import 'package:rikulo_commons/mirrors.dart';
 import 'package:rikulo_commons/js.dart';
 import 'package:rikulo_el/el.dart';
 import 'package:rikulo_el/elimpl.dart' as elimpl;
-import 'impl.dart';
+import 'eulimpl.dart';
 
 part 'src/EULTemplate.dart';
 part 'src/Controller.dart';
