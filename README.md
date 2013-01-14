@@ -75,7 +75,7 @@ Example 1: Everything starts from the EULTemplate:
     <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <link rel="stylesheet" type="text/css" href="../packages/rikulo/resource/css/view.css" />
+        <link rel="stylesheet" type="text/css" href="packages/rikulo/resource/css/view.css" />
       </head>
       <body>
         <style>
@@ -85,7 +85,7 @@ Example 1: Everything starts from the EULTemplate:
         }
         </style>
         <script type="application/dart" src="TestEUL2.dart"></script>
-        <script src="../packages/rikulo/resource/js/dart.js"></script>
+        <script src="packages/browser/dart.js"></script>
       </body>
     </html>
 
@@ -113,7 +113,7 @@ Example2: Or you can choose to read the template definition from the html page.
     <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <link rel="stylesheet" type="text/css" href="../packages/rikulo/resource/css/view.css" />
+        <link rel="stylesheet" type="text/css" href="packages/rikulo/resource/css/view.css" />
       </head>
       <body>
         <style>
@@ -141,7 +141,7 @@ Example2: Or you can choose to read the template definition from the html page.
           </View>
         </div>
         <script type="application/dart" src="TestEUL2.dart"></script>
-        <script src="../packages/rikulo/resource/js/dart.js"></script>
+        <script src="packages/browser/dart.js"></script>
       </body>
     </html>
 

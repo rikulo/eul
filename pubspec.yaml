@@ -8,6 +8,5 @@ authors:
 - Henri Chen <henrichen@rikulo.org>
 homepage: http://rikulo.org
 dependencies:
-  rikulo:
-    git: git://github.com/rikulo/rikulo.git
-  rikulo_el:
+  rikulo: any
+  rikulo_el: any
