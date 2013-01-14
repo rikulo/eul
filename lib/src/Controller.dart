@@ -2,6 +2,8 @@
 //History: Fri, Sep 07, 2012 10:13:40 PM
 // Author: tomyeh
 
+part of rikulo_eul;
+
 /**
  * The controller in the MVC pattern. It is specified in the apply
  * attribute in a EUL document. For example,
@@ -28,9 +30,9 @@
  * The second and last formats specifies the variable's name that the controller
  * will be stored, such that you can retrieve it back in the following expressions.
  * On the other hand, the first and third formats won't store the controller
- * in any variable. 
+ * in any variable.
  */
-interface Controller<T extends View> {
+abstract class Controller<T extends View> {
   /** Callback to initialize the views.
    * It is called after the associated view ([view]) and all of
    * its descendant views are instantiated.

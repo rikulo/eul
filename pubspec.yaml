@@ -10,3 +10,4 @@ homepage: http://rikulo.org
 dependencies:
   rikulo: any
   rikulo_el: any
+  unittest: any

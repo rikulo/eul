@@ -2,6 +2,8 @@
 //History: Thu, Sep 06, 2012  6:31:33 PM
 // Author: tomyeh
 
+part of rikulo_eulimpl;
+
 /**
  * The UI factory used to instantiate instances of [View], and
  * assigning the properties.
@@ -29,7 +31,7 @@ class DefaultUIFactory implements UIFactory {
   View newInstance(Mirrors mirrors, View parent, View before, String name) {
     ClassMirror cm = mirrors.getViewMirror(name.toLowerCase());
     if (cm == null)
-      throw new UIException("Cannot find the specified View class [$name]");
+      throw new UiError("Cannot find the specified View class [$name]");
     View view = ClassUtil.newInstanceByClassMirror(cm);
     if (view != null && parent != null)
       parent.addChild(view, before);
@@ -65,7 +67,7 @@ class DefaultUIFactory implements UIFactory {
   void _setProperty0(Mirrors mirrors, View view, String name, Object value) {
     MethodMirror setter = mirrors.getSetterMirror(reflect(view).type.qualifiedName, name);
     if (setter == null)
-      throw new UIException("Cannot find proper setter [$name] for $view");
+      throw new UiError("Cannot find proper setter [$name] for $view");
     ClassUtil.invoke(view, setter, [value]);
   }
 }
