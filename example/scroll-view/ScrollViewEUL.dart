@@ -1,7 +1,7 @@
 //Sample Code: ScrollView with EL
 
 import 'dart:html';
-import 'package:rikulo/view.dart';
+import 'package:rikulo_ui/view.dart';
 import 'package:rikulo_eul/eul.dart';
 
 List pseudoArray(int size) => new List(size);

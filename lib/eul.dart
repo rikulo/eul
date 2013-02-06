@@ -5,8 +5,8 @@ library rikulo_eul;
 import 'dart:html';
 import 'dart:mirrors';
 
-import 'package:rikulo/util.dart';
-import 'package:rikulo/view.dart';
+import 'package:rikulo_ui/util.dart';
+import 'package:rikulo_ui/view.dart';
 import 'package:rikulo_commons/mirrors.dart';
 import 'package:rikulo_commons/js.dart';
 import 'package:rikulo_el/el.dart';

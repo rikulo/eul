@@ -40,7 +40,7 @@ Example 1: Everything starts from the EULTemplate:
 (TextEUL.dart)
 
     import 'dart:html';
-    import 'package:rikulo/view.dart';
+    import 'package:rikulo_ui/view.dart';
     import 'package:rikulo_eul/eul.dart'; //(required) EUL classes and utilities
     import 'package:rikulo_eul/impl.dart'; //(optional) EUL implementation
 
@@ -75,7 +75,7 @@ Example 1: Everything starts from the EULTemplate:
     <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <link rel="stylesheet" type="text/css" href="packages/rikulo/resource/css/view.css" />
+        <link rel="stylesheet" type="text/css" href="packages/rikulo_ui/resource/css/view.css" />
       </head>
       <body>
         <style>
@@ -94,7 +94,7 @@ Example2: Or you can choose to read the template definition from the html page.
 (TextEUL2.dart)
 
     import 'dart:html';
-    import 'package:rikulo/view.dart';
+    import 'package:rikulo_ui/view.dart';
     import 'package:rikulo_eul/eul.dart'; //(required) EUL classes and utilities
     import 'package:rikulo_eul/impl.dart'; //(optional) EUL implementation
 
@@ -113,7 +113,7 @@ Example2: Or you can choose to read the template definition from the html page.
     <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <link rel="stylesheet" type="text/css" href="packages/rikulo/resource/css/view.css" />
+        <link rel="stylesheet" type="text/css" href="packages/rikulo_ui/resource/css/view.css" />
       </head>
       <body>
         <style>

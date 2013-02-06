@@ -5,7 +5,7 @@ library rikulo_eulimpl;
 
 import 'dart:mirrors';
 import 'package:rikulo_commons/mirrors.dart';
-import 'package:rikulo/view.dart';
+import 'package:rikulo_ui/view.dart';
 import 'package:rikulo_el/el.dart';
 
 part 'src/impl/Mirrors.dart';

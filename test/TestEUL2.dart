@@ -1,7 +1,7 @@
 //Sample Code: Test EUL
 
 import 'dart:html';
-import 'package:rikulo/view.dart';
+import 'package:rikulo_ui/view.dart';
 import 'package:rikulo_eul/eul.dart';
 
 void main() {
