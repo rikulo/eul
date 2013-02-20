@@ -1,5 +1,7 @@
 #Rikulo EUL
 
+> **EUL is deprecated.** Please use [Rikulo UXL](https://github.com/rikulo/uxl) instead.
+
 [Rikulo EUL](http://rikulo.org) (Embeddable User-interface Language) is a markup language allowing developers to define user-interface in HTML 5 and XML.
 
 Unlike [Rikulo UXL](https://github.com/rikulo/uxl), which compiles the markup language to Dart, EUL is interpreted at run time and can be embedded in Dart code (as a string) or HTML pages (as a HTML fragment).
